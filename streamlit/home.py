@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
-from utils import load_data, show_cart_sidebar
+from utils import load_data, show_cart_sidebar, CATEGORY_EMOJIS
 from sklearn.preprocessing import MinMaxScaler
+from models.recommender import Recommender, get_personalized_recommendations, get_generic_recommendations
 
 # Page config
 st.set_page_config(
@@ -10,33 +11,6 @@ st.set_page_config(
     layout="wide"
 )
 
-def get_generic_recommendations(df, n_recommendations=12):
-    if df.empty:
-        return df
-        
-    product_metrics = df.groupby('ProductID').agg({
-        'Quantity_sold': 'sum',
-        'avg_price': 'first',
-        'Universe': 'first',
-        'Category': 'first',
-        'FamilyLevel1': 'first',
-        'FamilyLevel2': 'first'
-    }).reset_index()
-    
-    scaler = MinMaxScaler()
-    product_metrics['popularity_score'] = scaler.fit_transform(
-        product_metrics[['Quantity_sold']]
-    )
-    
-    return product_metrics.nlargest(n_recommendations, 'popularity_score')
-
-def get_personalized_recommendations(df, user_data, n_recommendations=12):
-    if df.empty:
-        return df
-        
-    # Add your personalization logic here
-    # For now, return generic recommendations
-    return get_generic_recommendations(df, n_recommendations)
 
 def main():
     show_cart_sidebar()
@@ -47,17 +21,17 @@ def main():
     df = load_data()
     
     if df.empty:
-        st.error("Impossible de charger les données")
+        st.error("Unable to load data")
         return
     
     if 'logged_in' in st.session_state and st.session_state.logged_in:
         user = st.session_state.user_data
-        st.write(f"Bienvenue {user['Email']}!")
+        st.write(f"Welcome {user['Email']}!")
         products = get_personalized_recommendations(df, user)
-        st.subheader("Recommandations personnalisées pour vous")
+        st.subheader("Personalized Recommendations for You")
     else:
         products = get_generic_recommendations(df)
-        st.subheader("Produits populaires")
+        st.subheader("Popular Products")
     
     # Display products in a grid
     if not products.empty:
@@ -69,8 +43,8 @@ def main():
             with cols[idx % 3]:
                 st.write("---")
                 st.write(f"**{product['FamilyLevel2']}**")
-                st.write(f"{product['Category']} | {product['Universe']}")
-                st.write(f"Prix: {product['avg_price']:.2f}€")
+                st.write(f"{CATEGORY_EMOJIS[product['Category']]} | {product['Universe']}")
+                st.write(f"Price: ${product['avg_price']:.2f}")
                 
                 if st.button("🛒", key=f"add_{product['ProductID']}"):
                     if 'cart' not in st.session_state:
@@ -82,7 +56,7 @@ def main():
                     })
                     st.rerun()
     else:
-        st.warning("Aucun produit disponible pour le moment.")
+        st.warning("No products available at the moment.")
 
 if __name__ == "__main__":
     main()
