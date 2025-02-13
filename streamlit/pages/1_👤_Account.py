@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import load_data, find_country
-import country_converter as coco  # for getting country flags
+from utils import load_data, find_country, COUNTRY_FLAGS
 
 st.set_page_config(
     page_title="Account",
@@ -38,15 +37,6 @@ class UserManager:
         ]
         return None if user.empty else user.iloc[0]
 
-def get_country_flag(country_name):
-    # Convert country name to ISO 3166-1 alpha-2 code
-    country_code = coco.convert(names=country_name, to='ISO2')
-    if country_code:
-        # Convert country code to flag emoji
-        # Unicode for flags: country code letters shifted to regional indicator symbols
-        return ''.join(chr(ord(c) + 127397) for c in country_code)
-    return ''
-
 def main():
     if 'user_manager' not in st.session_state:
         st.session_state.user_manager = UserManager()
@@ -55,7 +45,7 @@ def main():
     if 'logged_in' in st.session_state and st.session_state.logged_in:
         # Display personalized header with user info
         user_data = st.session_state.user_data
-        country_flag = get_country_flag(user_data['Country'])
+        country_flag = COUNTRY_FLAGS[user_data['Country']]
         st.title(f"👤 {user_data['Email']}'s Account {country_flag}")
         
         # Display user information
