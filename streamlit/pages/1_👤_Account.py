@@ -26,7 +26,6 @@ class UserManager:
         client_id = len(self.users) + 1000000
         
         # Assign a default segment based on some logic
-        # For example, new users start as "NEW"
         client_segment = "INACTIVE_1Y"
         
         new_user = pd.DataFrame({
