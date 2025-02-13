@@ -21,6 +21,38 @@ CATEGORY_EMOJIS = {
     'Skiing': 'Skiing ⛷️',
 }
 
+COUNTRY_FLAGS = {
+    "FRA": "🇫🇷",
+    "DEU": "🇩🇪",
+    "ESP": "🇪🇸",
+    "ITA": "🇮🇹",
+    "GBR": "🇬🇧",
+    "USA": "🇺🇸",
+    "AUS": "🇦🇺",
+    "CAN": "🇨🇦",
+    "NLD": "🇳🇱",
+    "BEL": "🇧🇪",
+    "CHE": "🇨🇭",
+    "AUT": "🇦🇹",
+    "POL": "🇵🇱",
+    "SWE": "🇸🇪",
+    "CHN": "🇨🇳",
+    "JPN": "🇯🇵",
+    "KOR": "🇰🇷",
+    "IND": "🇮🇳",
+    "HKG": "🇭🇰",
+    "SIG": "🇸🇬"
+}
+
+def find_country(mode=None):
+    if 'country' not in st.session_state:
+        st.session_state.country = 'FRA'
+    if mode == "reset":
+        st.session_state.country = 'FRA'
+        st.rerun()
+    return st.session_state.country
+            
+
 @st.cache_data
 def load_data():
     try:
@@ -73,8 +105,6 @@ def get_frequently_bought_together(df, product_ids, n_recommendations=5):
     )
     
     return product_frequency.nlargest(n_recommendations, 'frequency_score')
-
-
 
 def show_cart_sidebar():
     with st.sidebar:
