@@ -138,7 +138,7 @@ def main():
         with col2:
             universe = st.selectbox("Universe", ["All"] + list(df['Universe'].unique()))
         with col3:
-            sort_by = st.selectbox("Sort by", ["Price: Low to High", "Price: High to Low", "Name"])
+            sort_by = st.selectbox("Sort by", ["Relevance", "Price: Low to High", "Price: High to Low", "Name"])
         
         # Filter products
         if category != "All":
@@ -147,12 +147,8 @@ def main():
             products = products[products['Universe'] == universe]
             
         # Sort products
-        if sort_by == "Price: Low to High":
-            products = products.sort_values('avg_price')
-        elif sort_by == "Price: High to Low":
-            products = products.sort_values('avg_price', ascending=False)
-        elif sort_by == "Name":
-            products = products.sort_values('FamilyLevel2')
+        if sort_by == "Relevance":
+            products = products
         
         # Create product grid
         num_cols = 3

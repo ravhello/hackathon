@@ -57,46 +57,48 @@ def get_personalized_recommendations(df, user_age, user, model):
 #     return top_products
 
 
-def get_generic_recommendations(transactions, n_recommendations=18):
+###################### first generic recommendation function ######################
 
-    """
-    Identify the top 5 most sold products during a given date range.
+# def get_generic_recommendations(transactions, n_recommendations=18):
+
+#     """
+#     Identify the top 5 most sold products during a given date range.
     
-    Parameters:
-        transactions (DataFrame): The transactions data containing 'SaleTransactionDate', 'ProductID', and 'Quantity'.
-        start_date (str): Start date of the peak period (format: 'YYYY-MM-DD').
-        end_date (str): End date of the peak period (format: 'YYYY-MM-DD').
+#     Parameters:
+#         transactions (DataFrame): The transactions data containing 'SaleTransactionDate', 'ProductID', and 'Quantity'.
+#         start_date (str): Start date of the peak period (format: 'YYYY-MM-DD').
+#         end_date (str): End date of the peak period (format: 'YYYY-MM-DD').
     
-    Returns:
-        DataFrame: Top 5 most sold products with their total quantity sold.
-    """
-    # Ensure the 'SaleTransactionDate' column is in datetime format
-    transactions['TransactionDate'] = pd.to_datetime(transactions['TransactionDate'])
+#     Returns:
+#         DataFrame: Top 5 most sold products with their total quantity sold.
+#     """
+#     # Ensure the 'SaleTransactionDate' column is in datetime format
+#     transactions['TransactionDate'] = pd.to_datetime(transactions['TransactionDate'])
     
-    # Filter transactions within the specified date range
-    peak_period_transactions = transactions[
-        (transactions['TransactionDate'] >= transactions['TransactionDate'].min()) & 
-        (transactions['TransactionDate'] <= transactions['TransactionDate'].max())
-    ]
+#     # Filter transactions within the specified date range
+#     peak_period_transactions = transactions[
+#         (transactions['TransactionDate'] >= transactions['TransactionDate'].min()) & 
+#         (transactions['TransactionDate'] <= transactions['TransactionDate'].max())
+#     ]
     
-    # Group by 'ProductID' and sum the quantities
-    product_sales = peak_period_transactions.groupby('ProductID')['Quantity_sold'].sum()
+#     # Group by 'ProductID' and sum the quantities
+#     product_sales = peak_period_transactions.groupby('ProductID')['Quantity_sold'].sum()
     
-    # Sort by quantity in descending order and get the top 5 products
-    top_products = product_sales.sort_values(ascending=False).head(n_recommendations)
+#     # Sort by quantity in descending order and get the top 5 products
+#     top_products = product_sales.sort_values(ascending=False).head(n_recommendations)
     
-    return top_products.reset_index()
+#     return top_products.reset_index()
 
 
 
-
+################# generic recommendation function with country filter ####################
 
 def get_generic_recommendations(df, n_recommendations=18, country="FRA"):
     if df.empty:
         return df
         
     # Filter transactions for the specified country
-    country_transactions = df[df['StoreCountry'] == country]
+    country_transactions = df[df['ClientCountry'] == country]
     
     product_metrics = country_transactions.groupby('ProductID').agg(
     {
