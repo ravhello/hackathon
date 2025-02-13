@@ -69,6 +69,7 @@ def load_data():
 
 
 def get_frequently_bought_together(df, product_ids, n_recommendations=5):
+    product_ids = [int(product_id) for product_id in product_ids]
     if df.empty or not product_ids:
         return pd.DataFrame()
         
