@@ -170,7 +170,7 @@ def get_generic_recommendations(df, n_recommendations=18, country="FRA"):
 
 
 
-def get_personalized_recommendations(df, user_data, n_recommendations=12):
+def get_personalized_recommendations(df, user_data, n_recommendations=18):
     if df.empty:
         return df
         
