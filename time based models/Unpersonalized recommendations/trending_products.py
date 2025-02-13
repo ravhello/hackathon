@@ -1,6 +1,6 @@
 import pandas as pd
 
-def get_trending_products(data, specific_date='2025-02-15', time_window=1, quantity_based=False, k=5, country='', storeID = ''):
+def get_trending_products(data, specific_date='2025-02-15', time_window=1, quantity_based=False, k=5, country=''):
     """
     Returns a list of dictionaries containing the top k trending products based on the number of units sold
     or total sales amount within the time window ending at specific_date.
@@ -12,7 +12,6 @@ def get_trending_products(data, specific_date='2025-02-15', time_window=1, quant
       quantity_based (bool): If True, the top k products are based on the quantity sold, else based on total sales amount.
       k (int): Number of top products to return.
       country (str): If specified, filters transactions by StoreCountry. If empty (''), no country filtering is applied.
-      storeID (str): If specified, filters transactions by StoreID. If empty (''), no storeID filtering is applied.
 
     Returns:
       list: A list of dictionaries containing product details.
@@ -33,9 +32,6 @@ def get_trending_products(data, specific_date='2025-02-15', time_window=1, quant
     # Apply country filter if a country is specified
     if country:
         window_data = window_data[window_data['StoreCountry'] == country]
-
-    if storeID:
-        window_data = window_data[window_data['StoreID'] == storeID]
     
     # Determine the metric to use for ranking products
     metric = 'Quantity_sold' if quantity_based else 'SalesNetAmountEuro'
