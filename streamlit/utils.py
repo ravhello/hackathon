@@ -41,7 +41,9 @@ COUNTRY_FLAGS = {
     "KOR": "🇰🇷",
     "IND": "🇮🇳",
     "HKG": "🇭🇰",
-    "SIG": "🇸🇬"
+    "SIG": "🇸🇬",
+    "ARE": "🇦🇪",
+    "BRA": "🇧🇷",
 }
 
 def find_country(mode=None):
@@ -82,7 +84,7 @@ def get_frequently_bought_together(df, product_ids, n_recommendations=5):
     # Get all products from these transactions except the ones already in cart
     related_products = df[
         (df['TransactionGroup'].isin(relevant_transactions['TransactionGroup'])) &
-        (~df['ProductID'].isin(product_ids))
+        (~df['ProductID'].isin(product_ids))  # This line ensures cart products are excluded
     ]
     
     if related_products.empty:
@@ -105,6 +107,7 @@ def get_frequently_bought_together(df, product_ids, n_recommendations=5):
     )
     
     return product_frequency.nlargest(n_recommendations, 'frequency_score')
+
 
 def show_cart_sidebar():
     with st.sidebar:
